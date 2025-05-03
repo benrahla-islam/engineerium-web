@@ -15,6 +15,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 // Import Font Awesome component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+// Import router
+import router from './router'
+
 
 // Add icons to the library
 library.add(faLock, faMicrochip, faFlask, faUserGraduate, faAngleDown)
@@ -24,6 +27,8 @@ const app = createApp(App)
 
 // Register FontAwesomeIcon component globally
 app.component('FontAwesomeIcon', FontAwesomeIcon)
+// Use router
+app.use(router)
 
 // Mount app
 app.mount('#app')

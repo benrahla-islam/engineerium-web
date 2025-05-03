@@ -10,11 +10,11 @@ defineProps({
   },
   description: {
     type: String,
-    default: 'Share your insights, research, and innovations with the UBC Engineering community. We welcome contributions from both students and faculty members.',
+    default: 'Share your insights, research, and innovations with the RE2SD Engineering community. We welcome contributions from both students and faculty members.',
   },
   formLink: {
     type: String,
-    default: 'https://forms.google.com/engineeriumcontribute',
+    default: 'https://docs.google.com/forms/d/e/1FAIpQLSeACxOksfJevoEpL40rVoaNLxSv0lsWzIIFsfLKQS0XoerybA/viewform?usp=dialog',
   },
   buttonText: {
     type: String,
@@ -42,7 +42,7 @@ defineProps({
             </a>
             
             <div class="mt-4 text-center text-sm text-neutral-500">
-              Our editorial team will review your submission within 5-7 business days.
+              Our team will contact you within 7 days window.
             </div>
           </div>
         </div>

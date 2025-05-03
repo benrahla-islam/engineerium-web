@@ -34,7 +34,7 @@ defineProps({
             <img src="@/assets/img/logo1.png" alt="Engineerium Logo" class="h-12 mr-3" />
             <h2 class="text-2xl font-bold text-white font-poppins">Engineerium</h2>
           </div>
-          <p class="text-neutral-400 mt-2">UBC Engineering Student Journal</p>
+          <p class="text-neutral-400 mt-2">RE2SD Engineering Student Journal</p>
         </div>
         
         <!-- Social links -->
