@@ -10,5 +10,5 @@ export default {
       '70/30': '70% 28%',
     },
   },
-  plugins: [],
+}
 }
