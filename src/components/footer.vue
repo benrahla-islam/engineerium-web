@@ -11,7 +11,7 @@ library.add(faInstagram, faEnvelope);
 defineProps({
   email: {
     type: String,
-    default: 'engineerium@ubc.ca',
+    default: 'ne.benrahla@hns-re2sd.dz',
   },
   instagramUrl: {
     type: String,
