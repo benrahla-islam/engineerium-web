@@ -72,7 +72,7 @@ const navLinks = [
           :class="[
             link.name === 'Home' 
               ? 'text-white bg-green-700 hover:bg-green-800' 
-              : 'text-neutral-700 hover:text-white hover:bg-green-700',
+              : 'text-neutral-700 hover:text-white hover:bg-green-600',
             'rounded-md px-3 py-2 flex items-center'
           ]"
         >
