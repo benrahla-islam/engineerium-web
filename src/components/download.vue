@@ -23,7 +23,7 @@ const props = defineProps({
   },
   fileSize: {
     type: String,
-    default: '8.5 MB',
+    default: '12.5 MB',
   },
   filePath: {
     type: String,
