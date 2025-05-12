@@ -108,9 +108,7 @@ const handleDownload = async () => {
               {{ isDownloading ? 'Downloading...' : buttonText }}
             </button>
             
-            <div class="mt-4 text-center text-sm text-neutral-500">
-              By downloading, you agree to our terms and conditions.
-            </div>
+            
           </div>
         </div>
       </div>
