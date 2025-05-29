@@ -11,7 +11,18 @@ import {
   faMicrochip, 
   faFlask, 
   faUserGraduate, 
-  faAngleDown 
+  faAngleDown,
+  faDownload,
+  faFileAlt,
+  faCalendar,
+  faClock,
+  faTag,
+  faArrowRight,
+  faArrowLeft,
+  faEnvelope,
+  faChevronRight,
+  faBars,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons'
 // Import Font Awesome component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -20,7 +31,24 @@ import router from './router'
 
 
 // Add icons to the library
-library.add(faLock, faMicrochip, faFlask, faUserGraduate, faAngleDown)
+library.add(
+  faLock, 
+  faMicrochip, 
+  faFlask, 
+  faUserGraduate, 
+  faAngleDown,
+  faDownload,
+  faFileAlt,
+  faCalendar,
+  faClock,
+  faTag,
+  faArrowRight,
+  faArrowLeft,
+  faEnvelope,
+  faChevronRight,
+  faBars,
+  faXmark
+)
 
 // Create app
 const app = createApp(App)

@@ -1,8 +1,9 @@
 <script setup>
 import logo from '@/assets/img/logo.svg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faLock, faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ref, onMounted, onUnmounted } from 'vue';
+import { RouterLink } from 'vue-router';
 
 // Mobile menu state
 const isMobileMenuOpen = ref(false);
@@ -47,10 +48,9 @@ onUnmounted(() => {
 
 // Navigation links
 const navLinks = [
-  { name: 'Home', locked: false },
-  { name: 'Releases', locked: true },
-  { name: 'Blog', locked: true },
-  { name: 'About', locked: true }
+  { name: 'Home', to: '/' },
+  { name: 'Issues', to: '/issues' },
+  { name: 'Authors', to: '/authors' }
 ];
 </script>
 
@@ -58,31 +58,23 @@ const navLinks = [
 <div>
   <nav class="flex justify-between items-center py-3 px-6 sticky top-0 z-50 bg-white/80 shadow-md backdrop-blur-md">
     <!-- Logo and magazine name -->
-    <div class="flex items-center">
+    <RouterLink to="/" class="flex items-center">
       <img :src="logo" alt="Engineerium" class="h-10 w-auto mr-3" />
       <h1 class="font-bold uppercase tracking-wide text-neutral-800 font-poppins text-xl">Engineerium</h1>
-    </div>
+    </RouterLink>
     
     <!-- Desktop Navigation -->
     <div class="hidden md:block md:ml-auto">
       <div class="flex space-x-2">
-        <a 
+        <RouterLink 
           v-for="(link, index) in navLinks" 
           :key="index"
-          :class="[
-            link.name === 'Home' 
-              ? 'text-white bg-green-700 hover:bg-green-800' 
-              : 'text-neutral-700 hover:text-white hover:bg-green-600',
-            'rounded-md px-3 py-2 flex items-center'
-          ]"
+          :to="link.to"
+          class="rounded-md px-3 py-2 text-neutral-700 hover:text-white hover:bg-green-600 transition duration-300"
+          active-class="text-white bg-green-700 hover:bg-green-800"
         >
           {{ link.name }}
-          <FontAwesomeIcon 
-            v-if="link.locked" 
-            :icon="faLock" 
-            class="ml-1 text-xs opacity-70" 
-          />
-        </a>
+        </RouterLink>
       </div>
     </div>
     
@@ -118,24 +110,16 @@ const navLinks = [
     </div>
     
     <div class="flex flex-col space-y-2 px-4 py-2">
-      <a 
+      <RouterLink 
         v-for="(link, index) in navLinks" 
         :key="index"
+        :to="link.to"
         @click="toggleMobileMenu"
-        :class="[
-          link.name === 'Home' 
-            ? 'text-white bg-green-700 hover:bg-green-800' 
-            : 'text-neutral-700 hover:text-white hover:bg-green-700',
-          'rounded-md px-3 py-2 flex items-center'
-        ]"
+        class="rounded-md px-3 py-2 text-neutral-700 hover:text-white hover:bg-green-700 transition duration-300"
+        active-class="text-white bg-green-700 hover:bg-green-800"
       >
         {{ link.name }}
-        <FontAwesomeIcon 
-          v-if="link.locked" 
-          :icon="faLock" 
-          class="ml-1 text-xs opacity-70" 
-        />
-      </a>
+      </RouterLink>
     </div>
   </div>
 </div>
