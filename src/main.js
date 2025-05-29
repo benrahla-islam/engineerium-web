@@ -22,7 +22,9 @@ import {
   faEnvelope,
   faChevronRight,
   faBars,
-  faXmark
+  faXmark,
+  faSearch,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons'
 // Import Font Awesome component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -47,7 +49,9 @@ library.add(
   faEnvelope,
   faChevronRight,
   faBars,
-  faXmark
+  faXmark,
+  faSearch,
+  faTimes
 )
 
 // Create app
