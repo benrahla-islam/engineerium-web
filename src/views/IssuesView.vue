@@ -4,22 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import IssueCard from '@/components/IssueCard.vue';
 import Footer from '@/components/footer.vue';
-import { issues } from '@/data/mockData.js';
+import { useIssuesStore } from '@/stores';
 
-const issuesList = ref([]);
+// Initialize store
+const issuesStore = useIssuesStore()
+
 const searchQuery = ref('');
 
 // Computed property to filter issues based on search query
 const filteredIssues = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return issuesList.value;
-  }
-  
-  const query = searchQuery.value.toLowerCase().trim();
-  return issuesList.value.filter(issue => 
-    issue.title.toLowerCase().includes(query) ||
-    issue.description.toLowerCase().includes(query)
-  );
+  return issuesStore.searchIssues(searchQuery.value)
 });
 
 // Clear search
@@ -27,8 +21,9 @@ const clearSearch = () => {
   searchQuery.value = '';
 };
 
-onMounted(() => {
-  issuesList.value = issues;
+onMounted(async () => {
+  // Fetch data from store
+  await issuesStore.fetchIssues()
 });
 </script>
 

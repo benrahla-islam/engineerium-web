@@ -2,7 +2,8 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClock, faTag, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from 'vue-router';
-import { getAuthorById } from '@/data/mockData.js';
+import { useAuthorsStore } from '@/stores';
+import { computed } from 'vue';
 
 const props = defineProps({
   article: {
@@ -11,8 +12,11 @@ const props = defineProps({
   }
 });
 
-// Get author information
-const author = getAuthorById(props.article.authorId);
+// Initialize store
+const authorsStore = useAuthorsStore()
+
+// Get author information from store
+const author = computed(() => authorsStore.getAuthorById(props.article.authorId));
 </script>
 
 <template>
@@ -71,6 +75,7 @@ const author = getAuthorById(props.article.authorId);
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

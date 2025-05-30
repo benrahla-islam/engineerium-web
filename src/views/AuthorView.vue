@@ -6,7 +6,7 @@ import { RouterLink } from 'vue-router';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ArticleCard from '@/components/ArticleCard.vue';
 import Footer from '@/components/footer.vue';
-import { getAuthorById, getArticlesByAuthor, getIssuesByAuthor } from '@/data/mockData.js';
+import { useAppStores } from '@/composables/useAppStores';
 
 const props = defineProps({
   authorId: {
@@ -15,15 +15,16 @@ const props = defineProps({
   }
 });
 
-const author = ref(null);
-const authorArticles = ref([]);
-const authorIssues = ref([]);
+// Use enhanced store composable
+const { getAuthorWithData, initializeApp, isLoading } = useAppStores()
+
+const authorData = ref(null);
 
 // Breadcrumb items
 const breadcrumbItems = computed(() => [
   { name: 'Home', to: '/' },
   { name: 'Authors', to: '/authors' },
-  { name: author.value?.name || 'Author' }
+  { name: authorData.value?.author?.name || 'Author' }
 ]);
 
 // Format date for display
@@ -35,12 +36,10 @@ const formatDate = (dateString) => {
   });
 };
 
-onMounted(() => {
-  author.value = getAuthorById(props.authorId);
-  if (author.value) {
-    authorArticles.value = getArticlesByAuthor(props.authorId);
-    authorIssues.value = getIssuesByAuthor(props.authorId);
-  }
+onMounted(async () => {
+  // Initialize app if needed and get author data efficiently
+  await initializeApp()
+  authorData.value = getAuthorWithData(props.authorId);
 });
 </script>
 
@@ -56,20 +55,20 @@ onMounted(() => {
           <!-- Author avatar and basic info -->
           <div class="md:w-1/3 text-center md:text-left">
             <div class="w-32 h-32 bg-green-700 rounded-full flex items-center justify-center mx-auto md:mx-0 mb-4">
-              <span class="text-5xl font-bold text-white">{{ author?.profileImage }}</span>
+              <span class="text-5xl font-bold text-white">{{ authorData?.author?.profileImage }}</span>
             </div>
             <h1 class="text-3xl font-bold text-neutral-800 font-poppins mb-2">
-              {{ author?.name }}
+              {{ authorData?.author?.name }}
             </h1>
             <p class="text-xl text-green-700 font-medium mb-4">
-              {{ author?.specialization }}
+              {{ authorData?.author?.specialization }}
             </p>
             <a 
-              :href="`mailto:${author?.email}`"
+              :href="`mailto:${authorData?.author?.email}`"
               class="inline-flex items-center text-green-700 hover:text-green-800 transition duration-300"
             >
               <FontAwesomeIcon :icon="faEnvelope" class="mr-2" />
-              {{ author?.email }}
+              {{ authorData?.author?.email }}
             </a>
           </div>
           
@@ -77,7 +76,7 @@ onMounted(() => {
           <div class="md:w-2/3">
             <h2 class="text-2xl font-bold text-neutral-800 font-poppins mb-4">About</h2>
             <p class="text-lg text-neutral-600 mb-6 leading-relaxed">
-              {{ author?.bio }}
+              {{ authorData?.author?.bio }}
             </p>
             
             <!-- Author statistics -->
@@ -87,14 +86,14 @@ onMounted(() => {
                   <FontAwesomeIcon :icon="faFileAlt" class="mr-2 text-green-700" />
                   <span class="font-medium">Articles Published</span>
                 </div>
-                <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorArticles.length }}</p>
+                <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorData?.articles?.length }}</p>
               </div>
               <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center text-neutral-600">
                   <FontAwesomeIcon :icon="faCalendar" class="mr-2 text-green-700" />
                   <span class="font-medium">Issues Contributed</span>
                 </div>
-                <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorIssues.length }}</p>
+                <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorData?.issues?.length }}</p>
               </div>
             </div>
           </div>
@@ -102,13 +101,13 @@ onMounted(() => {
       </div>
       
       <!-- Issues contributed to -->
-      <div class="mb-8" v-if="authorIssues.length > 0">
+      <div class="mb-8" v-if="authorData?.issues?.length > 0">
         <h2 class="text-2xl font-bold text-neutral-800 font-poppins mb-6">
           Issues Contributed To
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div 
-            v-for="issue in authorIssues" 
+            v-for="issue in authorData.issues" 
             :key="issue.id"
             class="bg-white rounded-lg shadow-lg p-4 hover:shadow-xl transition duration-300"
           >
@@ -134,12 +133,12 @@ onMounted(() => {
       <!-- Author's articles -->
       <div class="mb-8">
         <h2 class="text-2xl font-bold text-neutral-800 font-poppins mb-6">
-          Articles by {{ author?.name }}
+          Articles by {{ authorData?.author?.name }}
         </h2>
         
-        <div v-if="authorArticles.length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div v-if="authorData?.articles?.length > 0" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ArticleCard 
-            v-for="article in authorArticles" 
+            v-for="article in authorData.articles" 
             :key="article.id" 
             :article="article" 
           />

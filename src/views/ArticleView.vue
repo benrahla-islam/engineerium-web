@@ -5,7 +5,7 @@ import { faCalendar, faClock, faTag, faArrowLeft, faEnvelope } from '@fortawesom
 import { RouterLink } from 'vue-router';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import Footer from '@/components/footer.vue';
-import { getArticleById, getAuthorById, getIssueById } from '@/data/mockData.js';
+import { useAppStores } from '@/composables/useAppStores';
 
 const props = defineProps({
   issueId: {
@@ -18,16 +18,17 @@ const props = defineProps({
   }
 });
 
-const article = ref(null);
-const author = ref(null);
-const issue = ref(null);
+// Use enhanced store composable
+const { getRelatedData, isLoading } = useAppStores()
+
+const relatedData = ref(null);
 
 // Breadcrumb items
 const breadcrumbItems = computed(() => [
   { name: 'Home', to: '/' },
   { name: 'Issues', to: '/issues' },
-  { name: issue.value?.title || 'Issue', to: `/issues/${props.issueId}` },
-  { name: article.value?.title || 'Article' }
+  { name: relatedData.value?.issue?.title || 'Issue', to: `/issues/${props.issueId}` },
+  { name: relatedData.value?.article?.title || 'Article' }
 ]);
 
 // Format date for display
@@ -40,12 +41,9 @@ const formatDate = (dateString) => {
   });
 };
 
-onMounted(() => {
-  article.value = getArticleById(props.articleId);
-  if (article.value) {
-    author.value = getAuthorById(article.value.authorId);
-    issue.value = getIssueById(article.value.issueId);
-  }
+onMounted(async () => {
+  // Get all related data efficiently
+  relatedData.value = getRelatedData(props.articleId);
 });
 </script>
 
@@ -74,47 +72,47 @@ onMounted(() => {
           <div class="flex flex-wrap items-center gap-4 mb-4">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
               <FontAwesomeIcon :icon="faTag" class="mr-1" />
-              {{ article?.category }}
+              {{ relatedData?.article?.category }}
             </span>
             <div class="flex items-center text-sm text-neutral-500">
               <FontAwesomeIcon :icon="faClock" class="mr-1" />
-              <span>{{ article?.readTime }}</span>
+              <span>{{ relatedData?.article?.readTime }}</span>
             </div>
             <div class="flex items-center text-sm text-neutral-500">
               <FontAwesomeIcon :icon="faCalendar" class="mr-1" />
-              <span>{{ formatDate(article?.publishDate) }}</span>
+              <span>{{ formatDate(relatedData?.article?.publishDate) }}</span>
             </div>
           </div>
           
           <!-- Article title -->
           <h1 class="text-3xl md:text-4xl font-bold text-neutral-800 font-poppins mb-4">
-            {{ article?.title }}
+            {{ relatedData?.article?.title }}
           </h1>
           
           <!-- Article excerpt -->
           <p class="text-xl text-neutral-600 mb-6">
-            {{ article?.excerpt }}
+            {{ relatedData?.article?.excerpt }}
           </p>
           
           <!-- Author information -->
           <div class="flex items-center">
             <div class="w-12 h-12 bg-green-700 rounded-full flex items-center justify-center mr-4">
-              <span class="text-white font-bold text-lg">{{ author?.profileImage }}</span>
+              <span class="text-white font-bold text-lg">{{ relatedData?.author?.profileImage }}</span>
             </div>
             <div>
               <RouterLink 
-                :to="`/authors/${author?.id}`"
+                :to="`/authors/${relatedData?.author?.id}`"
                 class="text-lg font-semibold text-neutral-800 hover:text-green-700 transition duration-300"
               >
-                {{ author?.name }}
+                {{ relatedData?.author?.name }}
               </RouterLink>
-              <p class="text-neutral-600">{{ author?.specialization }}</p>
+              <p class="text-neutral-600">{{ relatedData?.author?.specialization }}</p>
               <a 
-                :href="`mailto:${author?.email}`"
+                :href="`mailto:${relatedData?.author?.email}`"
                 class="text-sm text-green-700 hover:text-green-800 flex items-center mt-1"
               >
                 <FontAwesomeIcon :icon="faEnvelope" class="mr-1" />
-                {{ author?.email }}
+                {{ relatedData?.author?.email }}
               </a>
             </div>
           </div>
@@ -123,7 +121,7 @@ onMounted(() => {
         <!-- Article body -->
         <div class="p-8">
           <div class="prose prose-lg max-w-none">
-            <div v-html="article?.content?.replace(/\n/g, '<br>')"></div>
+            <div v-html="relatedData?.article?.content?.replace(/\n/g, '<br>')"></div>
           </div>
         </div>
       </article>
@@ -137,7 +135,7 @@ onMounted(() => {
           :to="`/issues/${issueId}`"
           class="inline-flex items-center text-green-700 hover:text-green-800 font-medium transition duration-300"
         >
-          View all articles in {{ issue?.title }}
+          View all articles in {{ relatedData?.issue?.title }}
           <FontAwesomeIcon :icon="faArrowLeft" class="ml-2 rotate-180" />
         </RouterLink>
       </div>

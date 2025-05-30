@@ -6,7 +6,7 @@ import { faDownload, faCalendar, faFileAlt } from '@fortawesome/free-solid-svg-i
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ArticleCard from '@/components/ArticleCard.vue';
 import Footer from '@/components/footer.vue';
-import { getIssueById, getArticlesByIssue } from '@/data/mockData.js';
+import { useIssuesStore, useArticlesStore } from '@/stores';
 
 const props = defineProps({
   issueId: {
@@ -14,6 +14,10 @@ const props = defineProps({
     required: true
   }
 });
+
+// Initialize stores
+const issuesStore = useIssuesStore()
+const articlesStore = useArticlesStore()
 
 const route = useRoute();
 const issue = ref(null);
@@ -70,9 +74,16 @@ const handleDownload = async () => {
   }
 };
 
-onMounted(() => {
-  issue.value = getIssueById(props.issueId);
-  articles.value = getArticlesByIssue(props.issueId);
+onMounted(async () => {
+  // Fetch data from stores
+  await Promise.all([
+    issuesStore.fetchIssues(),
+    articlesStore.fetchArticles()
+  ])
+
+  // Get data from stores
+  issue.value = issuesStore.getIssueById(props.issueId);
+  articles.value = articlesStore.getArticlesByIssue(props.issueId);
 });
 </script>
 

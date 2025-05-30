@@ -4,28 +4,22 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faEnvelope, faFileAlt, faArrowRight, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from 'vue-router';
 import Footer from '@/components/footer.vue';
-import { authors, getArticlesByAuthor } from '@/data/mockData.js';
+import { useAuthorsStore, useArticlesStore } from '@/stores';
 
-const authorsList = ref([]);
+// Initialize stores
+const authorsStore = useAuthorsStore()
+const articlesStore = useArticlesStore()
+
 const searchQuery = ref('');
 
 // Computed property to filter authors based on search query
 const filteredAuthors = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return authorsList.value;
-  }
-  
-  const query = searchQuery.value.toLowerCase().trim();
-  return authorsList.value.filter(author => 
-    author.name.toLowerCase().includes(query) ||
-    author.specialization.toLowerCase().includes(query) ||
-    author.bio.toLowerCase().includes(query)
-  );
+  return authorsStore.searchAuthors(searchQuery.value)
 });
 
 // Get article count for each author
 const getAuthorArticleCount = (authorId) => {
-  return getArticlesByAuthor(authorId).length;
+  return articlesStore.getArticlesByAuthor(authorId).length;
 };
 
 // Clear search
@@ -33,8 +27,12 @@ const clearSearch = () => {
   searchQuery.value = '';
 };
 
-onMounted(() => {
-  authorsList.value = authors;
+onMounted(async () => {
+  // Fetch data from stores
+  await Promise.all([
+    authorsStore.fetchAuthors(),
+    articlesStore.fetchArticles()
+  ])
 });
 </script>
 
@@ -162,6 +160,7 @@ onMounted(() => {
 .line-clamp-4 {
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
