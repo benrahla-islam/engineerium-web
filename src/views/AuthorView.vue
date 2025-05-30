@@ -80,7 +80,7 @@ onMounted(async () => {
             </p>
             
             <!-- Author statistics -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div class="bg-gray-50 rounded-lg p-4">
                 <div class="flex items-center text-neutral-600">
                   <FontAwesomeIcon :icon="faFileAlt" class="mr-2 text-green-700" />
@@ -94,6 +94,18 @@ onMounted(async () => {
                   <span class="font-medium">Issues Contributed</span>
                 </div>
                 <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorData?.issues?.length }}</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center text-neutral-600">
+                  <!-- Honor Badge SVG for likes -->
+                  <svg class="w-5 h-5 mr-2 text-green-700" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="9" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <path d="M12 5.5l1.545 3.13L17 9.045l-2.727 2.66.644 3.755L12 14.27l-2.917 1.19.644-3.755L7 9.045l3.455-.415L12 5.5z" fill="currentColor"/>
+                    <path d="M9 16v5l3-1.5L15 21v-5" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.7"/>
+                  </svg>
+                  <span class="font-medium">Total Badges</span>
+                </div>
+                <p class="text-2xl font-bold text-neutral-800 mt-1">{{ authorData?.totalLikes || 0 }}</p>
               </div>
             </div>
           </div>

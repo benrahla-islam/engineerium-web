@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCalendar, faClock, faTag, faArrowLeft, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from 'vue-router';
 import Breadcrumb from '@/components/Breadcrumb.vue';
+import LikeButton from '@/components/LikeButton.vue';
 import Footer from '@/components/footer.vue';
 import { useAppStores } from '@/composables/useAppStores';
 
@@ -122,6 +123,11 @@ onMounted(async () => {
         <div class="p-8">
           <div class="prose prose-lg max-w-none">
             <div v-html="relatedData?.article?.content?.replace(/\n/g, '<br>')"></div>
+          </div>
+          
+          <!-- Like button section -->
+          <div class="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+            <LikeButton :articleId="articleId" />
           </div>
         </div>
       </article>
