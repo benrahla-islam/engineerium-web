@@ -1,6 +1,7 @@
 import './assets/main.css'
 
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 
 // Import Font Awesome core
@@ -24,7 +25,8 @@ import {
   faBars,
   faXmark,
   faSearch,
-  faTimes
+  faTimes,
+  faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons'
 // Import Font Awesome component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -51,14 +53,20 @@ library.add(
   faBars,
   faXmark,
   faSearch,
-  faTimes
+  faTimes,
+  faExclamationTriangle
 )
+
+// Create Pinia instance
+const pinia = createPinia()
 
 // Create app
 const app = createApp(App)
 
 // Register FontAwesomeIcon component globally
 app.component('FontAwesomeIcon', FontAwesomeIcon)
+// Use Pinia
+app.use(pinia)
 // Use router
 app.use(router)
 
