@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCalendar, faClock, faTag, faArrowLeft, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClock, faTag, faArrowLeft, faEnvelope, faCog } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from 'vue-router';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import LikeButton from '@/components/LikeButton.vue';
+import BookmarkButton from '@/components/BookmarkButton.vue';
+import ReadingProgress from '@/components/ReadingProgress.vue';
+import ReadingPreferences from '@/components/ReadingPreferences.vue';
 import Footer from '@/components/footer.vue';
 import { useAppStores } from '@/composables/useAppStores';
 
@@ -20,9 +23,41 @@ const props = defineProps({
 });
 
 // Use enhanced store composable
-const { getRelatedData, isLoading } = useAppStores()
+const { getRelatedData, initializeApp, isLoading, readingStore } = useAppStores()
 
 const relatedData = ref(null);
+const showPreferences = ref(false);
+
+// Reading preferences computed values
+const preferences = computed(() => readingStore.readingPreferences)
+
+const fontSizeClass = computed(() => {
+  const sizeMap = {
+    small: 'text-sm',
+    medium: 'text-base',
+    large: 'text-lg',
+    xlarge: 'text-xl'
+  }
+  return sizeMap[preferences.value.fontSize] || 'text-base'
+})
+
+const lineSpacingClass = computed(() => {
+  const spacingMap = {
+    compact: 'leading-tight',
+    normal: 'leading-normal',
+    relaxed: 'leading-relaxed'
+  }
+  return spacingMap[preferences.value.lineSpacing] || 'leading-normal'
+})
+
+const readingWidthClass = computed(() => {
+  const widthMap = {
+    narrow: 'max-w-2xl',
+    standard: 'max-w-4xl',
+    wide: 'max-w-6xl'
+  }
+  return widthMap[preferences.value.readingWidth] || 'max-w-4xl'
+})
 
 // Breadcrumb items
 const breadcrumbItems = computed(() => [
@@ -50,7 +85,10 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-gray-50">
-    <div class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Reading Progress Bar -->
+    <ReadingProgress :articleId="articleId" />
+    
+    <div :class="[readingWidthClass, 'mx-auto px-6 py-8']">
       <!-- Breadcrumb -->
       <Breadcrumb :items="breadcrumbItems" />
       
@@ -64,6 +102,30 @@ onMounted(async () => {
           Back to Issue
         </RouterLink>
       </div>
+      
+      <!-- Reading Controls (Floating) -->
+      <div class="fixed top-20 right-4 z-40 space-y-2">
+        <!-- Preferences Toggle -->
+        <button
+          @click="showPreferences = !showPreferences"
+          class="bg-white rounded-full p-3 shadow-lg border hover:bg-gray-50 transition-colors"
+          title="Reading Preferences"
+        >
+          <FontAwesomeIcon :icon="faCog" class="text-gray-600" />
+        </button>
+        
+        <!-- Bookmark Button -->
+        <div class="bg-white rounded-lg shadow-lg border p-2">
+          <BookmarkButton :articleId="articleId" />
+        </div>
+      </div>
+      
+      <!-- Reading Preferences Panel -->
+      <Transition name="slide-fade">
+        <div v-if="showPreferences" class="fixed top-20 right-20 z-50">
+          <ReadingPreferences />
+        </div>
+      </Transition>
       
       <!-- Article content -->
       <article class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -119,15 +181,22 @@ onMounted(async () => {
           </div>
         </div>
         
-        <!-- Article body -->
+        <!-- Article body with reading preferences applied -->
         <div class="p-8">
-          <div class="prose prose-lg max-w-none">
+          <div 
+            :class="[
+              'prose prose-lg max-w-none',
+              fontSizeClass,
+              lineSpacingClass
+            ]"
+          >
             <div v-html="relatedData?.article?.content?.replace(/\n/g, '<br>')"></div>
           </div>
           
-          <!-- Like button section -->
-          <div class="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+          <!-- Action buttons section -->
+          <div class="mt-8 pt-6 border-t border-gray-200 flex flex-wrap gap-4 justify-center">
             <LikeButton :articleId="articleId" />
+            <BookmarkButton :articleId="articleId" />
           </div>
         </div>
       </article>
@@ -189,5 +258,20 @@ onMounted(async () => {
 
 .prose li {
   margin: 0.5rem 0;
+}
+
+/* Transition animations */
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>

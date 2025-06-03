@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { useArticlesStore, useAuthorsStore, useIssuesStore, useSearchStore, useLikesStore } from '@/stores'
+import { useArticlesStore, useAuthorsStore, useIssuesStore, useSearchStore, useLikesStore, useReadingStore } from '@/stores'
 
 /**
  * Enhanced composable for managing application stores with performance optimizations
@@ -11,6 +11,7 @@ export function useAppStores() {
   const issuesStore = useIssuesStore()
   const searchStore = useSearchStore()
   const likesStore = useLikesStore()
+  const readingStore = useReadingStore()
 
   // Computed loading state across all stores
   const isLoading = computed(() => 
@@ -43,6 +44,7 @@ export function useAppStores() {
         issuesStore.fetchIssues()
       ])
       likesStore.initializeLikes()
+      readingStore.initializeReading()
     } catch (error) {
       console.error('Failed to initialize app:', error)
     }
@@ -100,6 +102,7 @@ export function useAppStores() {
     issuesStore,
     searchStore,
     likesStore,
+    readingStore,
 
     // Computed states
     isLoading,
